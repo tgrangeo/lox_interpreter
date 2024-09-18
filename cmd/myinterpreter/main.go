@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"unicode"
 )
 
 var line = 1
 
-func printToken(content []byte, i int) (int, error) {
+func Scanner(content []byte, i int) (int, error) {
 	switch content[i] {
 	case ' ', '\t':
 	case '(':
@@ -78,6 +80,19 @@ func printToken(content []byte, i int) (int, error) {
 		} else {
 			fmt.Printf("STRING \"%s\" %s\n", res, res)
 		}
+	case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+		raw := ""
+		for ; i < len(content) && (unicode.IsDigit(rune(content[i])) || content[i] == '.'); i++ {
+			raw += string(content[i])
+		}
+		i--
+		f, _ := strconv.ParseFloat(raw, 64)
+		if f == float64(int(f)) {
+			fmt.Printf("NUMBER %s %.1f\n", raw, f)
+		} else {
+			fmt.Printf("NUMBER %s %g\n", raw, f)
+
+		}
 	case '\n':
 		line++
 	default:
@@ -104,7 +119,7 @@ func main() {
 	}
 	if len(fileContents) > 0 {
 		for i := 0; i < len(fileContents); i++ {
-			i, err = printToken(fileContents, i)
+			i, err = Scanner(fileContents, i)
 			if err != nil {
 				defer os.Exit(65)
 			}
