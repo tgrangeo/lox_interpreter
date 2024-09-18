@@ -63,9 +63,17 @@ func printToken(content []byte, i int) (int, error) {
 			for i < len(content) && content[i] != '\n' {
 				i++
 			}
-			return i -1, nil
+			return i - 1, nil
 		} else {
 			fmt.Println("SLASH / null")
+		}
+	case '"':
+		res := ""
+		for i += 1; i < len(content) && content[i] != '"'; i++ {
+			res += string(content[i])
+		}
+		if content[i] == '"' {
+			fmt.Printf("STRING \"%s\" %s\n", res, res)
 		}
 	case '\n':
 		line++
