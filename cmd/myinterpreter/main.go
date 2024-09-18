@@ -10,7 +10,23 @@ import (
 
 var line = 1
 
-var tokenList = "(){}*-+.,;=!<>/\""
+var reserved = []string{
+	"class",
+	"else",
+	"false",
+	"for",
+	"fun",
+	"if",
+	"nil",
+	"or",
+	"print",
+	"return",
+	"super",
+	"this",
+	"true",
+	"var",
+	"while",
+}
 
 func Scanner(content []byte, i int) (int, error) {
 	switch content[i] {
@@ -110,7 +126,19 @@ func Scanner(content []byte, i int) (int, error) {
 				}
 			}
 			i--
-			fmt.Printf("IDENTIFIER %s null\n", ident)
+
+			//check if identifier is reserved
+			isReserved := false
+			for _, r := range reserved {
+				if r == ident {
+					fmt.Printf("%s %s null\n", strings.ToUpper(ident), ident)
+					isReserved = true
+				}
+			}
+			if !isReserved {
+				fmt.Printf("IDENTIFIER %s null\n", ident)
+			}
+
 		} else {
 			fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %c\n", line, content[i])
 			return i, fmt.Errorf("bad char")
