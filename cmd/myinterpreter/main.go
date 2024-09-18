@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"unicode"
 )
 
 var line = 1
+
+var tokenList = "(){}*-+.,;=!<>/\""
 
 func Scanner(content []byte, i int) (int, error) {
 	switch content[i] {
@@ -96,11 +99,31 @@ func Scanner(content []byte, i int) (int, error) {
 	case '\n':
 		line++
 	default:
-		fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %c\n", line, content[i])
-		return i, fmt.Errorf("bad char")
+		if isAlphanumeric(rune(content[i])) || content[i] == '_' {
+			ident := ""
+			for ; i < len(content) && content[i] != ' '; i++ {
+				ch := string(content[i])
+				if strings.Contains("(){}*-+.,;=!<>/\" ", ch) {
+					break
+				} else {
+					ident += ch
+				}
+			}
+			i--
+			fmt.Printf("IDENTIFIER %s null\n", ident)
+		} else {
+			fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %c\n", line, content[i])
+			return i, fmt.Errorf("bad char")
+
+		}
 	}
 	return i, nil
 }
+
+func isAlphanumeric(r rune) bool {
+	return unicode.IsLetter(r) || unicode.IsDigit(r)
+}
+
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
