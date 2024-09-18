@@ -7,6 +7,7 @@ import (
 
 func printToken(content []byte, i int) (int, error) {
 	switch content[i] {
+	case '\n', ' ', '\t':
 	case '(':
 		fmt.Println("LEFT_PAREN ( null")
 	case ')':
