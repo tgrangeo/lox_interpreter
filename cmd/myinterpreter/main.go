@@ -5,17 +5,12 @@ import (
 	"os"
 )
 
-func Scanner(c byte) {
-	switch c {
-	case '(':
-		fmt.Println("LEFT_PAREN ( null")
-	case ')':
-		fmt.Println("RIGHT_PAREN ) null")
-	case '{':
-		fmt.Println("LEFT_BRACE { null")
-	case '}':
-		fmt.Println("RIGHT_BRACE } null")
-	}
+var tokens = map[rune]string{
+	'(':  "LEFT_PAREN ( null",
+	')':  "RIGHT_PAREN ) null",
+	'{':  "LEFT_BRACE { null",
+	'}':  "RIGHT_BRACE } null",
+	'\n': "EOF  null",
 }
 
 func main() {
@@ -37,7 +32,7 @@ func main() {
 
 	if len(fileContents) > 0 {
 		for _, c := range fileContents {
-			Scanner(c)
+			fmt.Println(tokens[rune(c)])
 		}
 	}
 	fmt.Println("EOF  null")
