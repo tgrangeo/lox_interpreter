@@ -34,6 +34,13 @@ func printToken(content []byte, i int) (int, error) {
 		} else {
 			fmt.Println("EQUAL = null")
 		}
+	case '!':
+		if i+1 < len(content) && content[i+1] == '=' {
+			fmt.Println("BANG_EQUAL != null")
+			i += 1
+		} else {
+			fmt.Println("BANG ! null")
+		}
 	default:
 		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %c\n", content[i])
 		return i, fmt.Errorf("bad char")
