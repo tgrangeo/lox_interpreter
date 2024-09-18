@@ -19,6 +19,17 @@ var tokens = map[rune]string{
 	';':  "SEMICOLON ; null",
 }
 
+func checkLexicalError(content []byte) bool {
+	bad := false
+	for _, c := range content {
+		if tokens[rune(c)] == "" {
+			fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s\n", string(c))
+			bad = true
+		}
+	}
+	return !bad
+}
+
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
@@ -35,10 +46,14 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error reading file: %v\n", err)
 		os.Exit(1)
 	}
-
 	if len(fileContents) > 0 {
+		if !checkLexicalError(fileContents) {
+			defer os.Exit(65)
+		}
 		for _, c := range fileContents {
-			fmt.Println(tokens[rune(c)])
+			if tokens[rune(c)] != "" {
+				fmt.Println(tokens[rune(c)])
+			}
 		}
 	}
 	fmt.Println("EOF  null")
