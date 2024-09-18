@@ -72,7 +72,10 @@ func printToken(content []byte, i int) (int, error) {
 		for i += 1; i < len(content) && content[i] != '"'; i++ {
 			res += string(content[i])
 		}
-		if content[i] == '"' {
+		if i == len(content) {
+			fmt.Fprintf(os.Stderr, "[line %d] Error: Unterminated string.\n", line)
+			return i, fmt.Errorf("bad char")
+		} else {
 			fmt.Printf("STRING \"%s\" %s\n", res, res)
 		}
 	case '\n':
