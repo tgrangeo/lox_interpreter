@@ -55,6 +55,15 @@ func printToken(content []byte, i int) (int, error) {
 		} else {
 			fmt.Println("GREATER > null")
 		}
+	case '/':
+		if i+1 < len(content) && content[i+1] == '/' {
+			for i < len(content) && content[i] != '\n' {
+				i++
+			}
+			return i, nil
+		} else {
+			fmt.Println("SLASH / null")
+		}
 	default:
 		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %c\n", content[i])
 		return i, fmt.Errorf("bad char")
