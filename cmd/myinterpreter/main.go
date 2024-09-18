@@ -5,31 +5,41 @@ import (
 	"os"
 )
 
-var tokens = map[rune]string{
-	'(':  "LEFT_PAREN ( null",
-	')':  "RIGHT_PAREN ) null",
-	'{':  "LEFT_BRACE { null",
-	'}':  "RIGHT_BRACE } null",
-	'\n': "EOF  null",
-	'*':  "STAR * null",
-	'.':  "DOT . null",
-	',':  "COMMA , null",
-	'+':  "PLUS + null",
-	'-':  "MINUS - null",
-	';':  "SEMICOLON ; null",
-}
-
-func checkLexicalError(content []byte) bool {
-	bad := false
-	for _, c := range content {
-		if tokens[rune(c)] == "" {
-			fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %s\n", string(c))
-			bad = true
+func printToken(content []byte, i int) (int, error) {
+	switch content[i] {
+	case '(':
+		fmt.Println("LEFT_PAREN ( null")
+	case ')':
+		fmt.Println("RIGHT_PAREN ) null")
+	case '{':
+		fmt.Println("LEFT_BRACE { null")
+	case '}':
+		fmt.Println("RIGHT_BRACE } null")
+	case '*':
+		fmt.Println("STAR * null")
+	case '.':
+		fmt.Println("DOT . null")
+	case ',':
+		fmt.Println("COMMA , null")
+	case '+':
+		fmt.Println("PLUS + null")
+	case '-':
+		fmt.Println("MINUS - null")
+	case ';':
+		fmt.Println("SEMICOLON ; null")
+	case '=':
+		if i+1 < len(content) && content[i+1] == '=' {
+			fmt.Println("EQUAL_EQUAL == null")
+			i += 1
+		} else {
+			fmt.Println("EQUAL = null")
 		}
+	default:
+		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %c\n", content[i])
+		return i, fmt.Errorf("bad char")
 	}
-	return !bad
+	return i, nil
 }
-
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
@@ -47,12 +57,10 @@ func main() {
 		os.Exit(1)
 	}
 	if len(fileContents) > 0 {
-		if !checkLexicalError(fileContents) {
-			defer os.Exit(65)
-		}
-		for _, c := range fileContents {
-			if tokens[rune(c)] != "" {
-				fmt.Println(tokens[rune(c)])
+		for i := 0; i < len(fileContents); i++ {
+			i, err = printToken(fileContents, i)
+			if err != nil {
+				defer os.Exit(65)
 			}
 		}
 	}
