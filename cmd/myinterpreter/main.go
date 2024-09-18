@@ -5,6 +5,19 @@ import (
 	"os"
 )
 
+func Scanner(c byte) {
+	switch c {
+	case '(':
+		fmt.Println("LEFT_PAREN ( null")
+	case ')':
+		fmt.Println("RIGHT_PAREN ) null")
+	case '{':
+		fmt.Println("LEFT_BRACE { null")
+	case '}':
+		fmt.Println("RIGHT_BRACE } null")
+	}
+}
+
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Fprintln(os.Stderr, "Usage: ./your_program.sh tokenize <filename>")
@@ -24,11 +37,7 @@ func main() {
 
 	if len(fileContents) > 0 {
 		for _, c := range fileContents {
-			if c == '(' {
-				fmt.Println("LEFT_PAREN ( null")
-			} else if c == ')' {
-				fmt.Println("RIGHT_PAREN ) null")
-			}
+			Scanner(c)
 		}
 	}
 	fmt.Println("EOF  null")
