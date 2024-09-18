@@ -11,6 +11,12 @@ var tokens = map[rune]string{
 	'{':  "LEFT_BRACE { null",
 	'}':  "RIGHT_BRACE } null",
 	'\n': "EOF  null",
+	'*':  "STAR * null",
+	'.':  "DOT . null",
+	',':  "COMMA , null",
+	'+':  "PLUS + null",
+	'-':  "MINUS - null",
+	';':  "SEMICOLON ; null",
 }
 
 func main() {
