@@ -5,9 +5,11 @@ import (
 	"os"
 )
 
+var line = 1
+
 func printToken(content []byte, i int) (int, error) {
 	switch content[i] {
-	case '\n', ' ', '\t':
+	case ' ', '\t':
 	case '(':
 		fmt.Println("LEFT_PAREN ( null")
 	case ')':
@@ -61,12 +63,14 @@ func printToken(content []byte, i int) (int, error) {
 			for i < len(content) && content[i] != '\n' {
 				i++
 			}
-			return i, nil
+			return i -1, nil
 		} else {
 			fmt.Println("SLASH / null")
 		}
+	case '\n':
+		line++
 	default:
-		fmt.Fprintf(os.Stderr, "[line 1] Error: Unexpected character: %c\n", content[i])
+		fmt.Fprintf(os.Stderr, "[line %d] Error: Unexpected character: %c\n", line, content[i])
 		return i, fmt.Errorf("bad char")
 	}
 	return i, nil
